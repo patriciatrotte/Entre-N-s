@@ -22,7 +22,7 @@ export const MissionSituation: React.FC<MissionSituationProps> = ({
   // Perspectives visible to me: either shared with group or assigned privately to me
   const myPlayer = state.players[myPlayerId];
   const myAssignedPerspectives = mission.perspectives.filter(
-    (p) => p.privateToPlayerId === myPlayerId
+    (p) => state.perspectiveAssignments?.[p.id] === myPlayerId
   );
 
   const sharedPerspectives = mission.perspectives.filter((p) =>
@@ -39,8 +39,7 @@ export const MissionSituation: React.FC<MissionSituationProps> = ({
   const handleProceedToExplore = () => {
     // In server, can jump to explore or directly individual choice
     socketService.send({
-      type: 'SUBMIT_INDIVIDUAL_CHOICE',
-      actionId: '', // trigger move
+      type: 'EXPLORE_MISSION'
     });
   };
 
@@ -140,7 +139,7 @@ export const MissionSituation: React.FC<MissionSituationProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {mission.perspectives.map((persp) => {
-            const isAssignedToMe = persp.privateToPlayerId === myPlayerId;
+            const isAssignedToMe = state.perspectiveAssignments?.[persp.id] === myPlayerId;
             const isShared = state.sharedPerspectiveIds.includes(persp.id);
 
             // If not shared and not assigned to me, show anonymized sealed card
