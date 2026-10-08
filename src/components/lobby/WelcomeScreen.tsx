@@ -16,7 +16,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   onOpenInstitutionalGuide,
   onOpenOrganizer,
 }) => {
-  const [mode, setMode] = useState<'create' | 'join' | 'solo'>('create');
+  const [mode, setMode] = useState<'create' | 'join' | 'solo'>('solo');
   const [nickname, setNickname] = useState(
     localStorage.getItem('guardioes_nickname') || ''
   );
@@ -93,7 +93,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         </h1>
 
         <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-serif">
-          Bem-vindos à <strong>Vila dos Encontros</strong>. Reúna sua equipe (2 a 6 participantes) para vivenciar e debater dilemas éticos reais do cotidiano do serviço público com respeito, escuta e integridade.
+          Bem-vindos à <strong>Vila dos Encontros</strong>. Jogue com três companheiros virtuais para vivenciar dilemas éticos reais do serviço público. A modalidade em grupo está em desenvolvimento.
         </p>
       </div>
 
@@ -101,7 +101,8 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
       <div className="w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
         <button type="button" onClick={() => setMode('solo')} className="w-full py-3 rounded-xl bg-amber-500 text-slate-950 font-bold">Jogar sozinho com companheiros virtuais</button>
         {mode === 'solo' && <p className="text-sm text-amber-200">Partida neste dispositivo, com três personagens controlados pelo computador. O progresso fica salvo nesta aba. As avaliações não são enviadas ao organizador.</p>}
-        {/* Toggle mode: Criar Sala vs Entrar em Sala */}
+        {/* O multiplayer permanece no código para uma etapa futura. */}
+        {false && <div>
         <div className="grid grid-cols-2 p-1.5 bg-slate-950 rounded-2xl border border-slate-800">
           <button
             type="button"
@@ -130,6 +131,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
           </button>
         </div>
 
+        </div>}
         <form onSubmit={mode !== 'join' ? handleCreateRoom : handleJoinRoom} className="space-y-6">
           {/* Room Code input (if joining) */}
           {mode === 'join' && (
