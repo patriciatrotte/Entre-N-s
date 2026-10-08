@@ -211,10 +211,10 @@ export const MISSIONS: MissionDef[] = [
     ],
     tfChallenge: {
       id: 'tf-2',
-      statement: 'No serviço público, quando um colega comete um erro técnico relevante sob prazo crítico, é justificável usar expressões duras e desqualificantes para demonstrar a gravidade da situação à equipe.',
-      isTrue: false,
-      explanation: 'FALSO. A urbanidade e o respeito à pessoa são deveres absolutos do servidor público. Erros técnicos devem ser apontados com precisão e clareza objetiva, sem qualquer ataque à dignidade pessoal.',
-      sourceNote: 'Orientação Pedagógica Proposta / Código de Conduta e Ética Profissional no Serviço Público.'
+      statement: 'A Lei nº 8.112/1990 estabelece, entre os deveres do servidor público federal abrangido por ela, tratar com urbanidade as pessoas.',
+      isTrue: true,
+      explanation: 'VERDADEIRO. O art. 116, inciso XI, da Lei nº 8.112/1990 prevê o dever de tratar com urbanidade as pessoas. Na situação de Tiago e Roberto, a cobrança por precisão técnica não dispensa o respeito no trato profissional.',
+      sourceNote: 'Lei nº 8.112/1990, art. 116, XI (servidores públicos federais abrangidos pela lei). Fonte oficial: https://www.planalto.gov.br/ccivil_03/leis/l8112compilado.htm'
     },
     discovery: {
       key: 'respeito',
