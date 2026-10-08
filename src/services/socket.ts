@@ -22,9 +22,9 @@ class GameSocketService {
 
   constructor() {
     // Restore session credentials from localStorage if present
-    const savedToken = sessionStorage.getItem('guardioes_session_token');
-    const savedRoom = sessionStorage.getItem('guardioes_room_code');
-    const savedPid = sessionStorage.getItem('guardioes_player_id');
+    const savedToken = sessionStorage.getItem('guardioes_session_token') || localStorage.getItem('entre-nos-solo-token');
+    const savedRoom = sessionStorage.getItem('guardioes_room_code') || localStorage.getItem('entre-nos-solo-room');
+    const savedPid = sessionStorage.getItem('guardioes_player_id') || localStorage.getItem('entre-nos-solo-player');
     if (savedToken && savedRoom && savedPid) {
       this.sessionToken = savedToken;
       this.roomCode = savedRoom;
@@ -32,7 +32,7 @@ class GameSocketService {
     }
   }
 
-  private localMode = sessionStorage.getItem('entre-nos-mode') === 'solo';
+  private localMode = sessionStorage.getItem('entre-nos-mode') === 'solo' || !!localStorage.getItem('entre-nos-solo-save');
   private pollTimer: ReturnType<typeof setTimeout> | null = null;
   private queue: Promise<void> = Promise.resolve();
   private localConnection = {readyState: 1, send: (data: string) => this.handleServerMessage(JSON.parse(data))};
@@ -41,7 +41,7 @@ class GameSocketService {
     this.intentionallyClosed = false;
     if (this.localMode) {
       const engine = await import('../game/engine');
-      const saved = sessionStorage.getItem('entre-nos-solo');
+      const saved = localStorage.getItem('entre-nos-solo-save') || sessionStorage.getItem('entre-nos-solo');
       if (saved) {try {engine.restore(JSON.parse(saved));} catch {sessionStorage.removeItem('entre-nos-solo');}}
     }
     this.isConnected = true;
@@ -74,7 +74,9 @@ class GameSocketService {
         } else {
           engine.handleClientMessage(this.localConnection,msg);
         }
-        sessionStorage.setItem('entre-nos-solo',JSON.stringify(engine.snapshot()));
+        const snapshot = JSON.stringify(engine.snapshot());
+        sessionStorage.setItem('entre-nos-solo', snapshot);
+        localStorage.setItem('entre-nos-solo-save', snapshot);
       } else await this.request(msg);
     }).catch(error => this.errorListeners.forEach(l => l(error.message || 'Falha na conexão')));
   }
@@ -103,6 +105,11 @@ class GameSocketService {
         sessionStorage.setItem('guardioes_session_token', msg.sessionToken);
         sessionStorage.setItem('guardioes_room_code', msg.roomCode);
         sessionStorage.setItem('guardioes_player_id', msg.playerId);
+        if (this.localMode) {
+          localStorage.setItem('entre-nos-solo-token', msg.sessionToken);
+          localStorage.setItem('entre-nos-solo-room', msg.roomCode);
+          localStorage.setItem('entre-nos-solo-player', msg.playerId);
+        }
 
         this.stateListeners.forEach((l) => l(msg.state));
         break;
@@ -161,6 +168,9 @@ class GameSocketService {
     this.roomCode = null;
     this.myPlayerId = null;
     this.sessionToken = null;
+    localStorage.removeItem('entre-nos-solo-token');
+    localStorage.removeItem('entre-nos-solo-room');
+    localStorage.removeItem('entre-nos-solo-player');
   }
 
   public leaveRoom() {
@@ -171,6 +181,10 @@ class GameSocketService {
     if (this.pollTimer) clearTimeout(this.pollTimer);
     sessionStorage.removeItem('entre-nos-solo');
     sessionStorage.removeItem('entre-nos-mode');
+    localStorage.removeItem('entre-nos-solo-save');
+    localStorage.removeItem('entre-nos-solo-token');
+    localStorage.removeItem('entre-nos-solo-room');
+    localStorage.removeItem('entre-nos-solo-player');
     sessionStorage.removeItem('guardioes_session_token');
     sessionStorage.removeItem('guardioes_room_code');
     sessionStorage.removeItem('guardioes_player_id');
