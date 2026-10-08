@@ -38,6 +38,30 @@ export const MissionConsequence: React.FC<MissionConsequenceProps> = ({
 
   return (
     <div className="flex flex-col gap-6 w-full max-w-5xl mx-auto text-slate-100 animate-in fade-in">
+      {/* Completion recognition: progress, not moral correctness. */}
+      <section role="status" aria-live="polite" className="rounded-3xl border border-amber-500/60 bg-gradient-to-r from-amber-950/50 via-slate-900 to-teal-950/40 p-5 sm:p-7 shadow-xl">
+        <div className="flex items-center gap-4">
+          <div className="shrink-0 w-16 h-16 rounded-full bg-amber-400/20 border-2 border-amber-400 flex items-center justify-center" aria-hidden="true">
+            <Sparkles className="w-9 h-9 text-amber-300" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-xs font-black tracking-wider uppercase text-amber-300">{isLastMission ? 'Jornada de missões concluída!' : 'Missão concluída! Nova descoberta desbloqueada'}</p>
+            <h2 className="text-xl sm:text-2xl font-black mt-1">{mission.discovery.title}</h2>
+            <p className="text-sm text-slate-300 mt-1">Conquista por participar e concluir a reflexão — não por escolher uma resposta considerada correta.</p>
+          </div>
+        </div>
+        <div className="flex items-center justify-between gap-3 mt-5 text-sm font-semibold">
+          <span>Progresso na Vila dos Encontros</span>
+          <span className="text-amber-300">{completedCount} de 4 missões</span>
+        </div>
+        <div className="flex gap-2 mt-2" role="img" aria-label={`${completedCount} de 4 missões concluídas`}>
+          {Array.from({ length: 4 }, (_, i) => (
+            <div key={i} className={`h-3 rounded-full flex-1 ${i < completedCount ? 'bg-amber-400' : 'bg-slate-700'}`} />
+          ))}
+        </div>
+        {isLastMission && <p className="mt-4 text-teal-200 font-semibold">Você percorreu as quatro missões! A avaliação final permitirá revisitar o que aprendeu.</p>}
+      </section>
+
       {/* Top Banner */}
       <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-7 shadow-2xl relative overflow-hidden">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
