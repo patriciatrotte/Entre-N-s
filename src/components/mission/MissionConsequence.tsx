@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { NarrationControl } from './NarrationControl';
 import { MissionDef, RoomState } from '../../types/game';
 import { DiscoveryCard } from '../cards/CardView';
 import { socketService } from '../../services/socket';
@@ -67,8 +68,8 @@ export const MissionConsequence: React.FC<MissionConsequenceProps> = ({
           </div>
           <div className="min-w-0">
             <p className="text-xs font-black tracking-wider uppercase text-amber-300">{isLastMission ? 'Jornada de missões concluída!' : 'Missão concluída! Nova descoberta desbloqueada'}</p>
-            <h2 className="text-xl sm:text-2xl font-black mt-1">{mission.discovery.title}</h2>
-            <p className="text-sm text-slate-300 mt-1">Conquista por participar e concluir a reflexão — não por escolher uma resposta considerada correta.</p>
+            <h2 className="text-xl sm:text-2xl font-black mt-1">Conquista desbloqueada!</h2>
+
           </div>
         </div>
         <div className="flex items-center justify-between gap-3 mt-5 text-sm font-semibold">
@@ -83,6 +84,7 @@ export const MissionConsequence: React.FC<MissionConsequenceProps> = ({
         {isLastMission && <p className="mt-4 text-teal-200 font-semibold">Você percorreu as quatro missões! A avaliação final permitirá revisitar o que aprendeu.</p>}
       </section>
 
+      <NarrationControl text={[chosenAction.title, chosenAction.consequenceDetails, chosenAction.pedagogicalFeedback, mission.discovery.title, mission.discovery.description].join(" ")} />
       {/* Concise, icon-led outcome. Full pedagogical content remains available. */}
       <section className="bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-7 space-y-5">
         <div className="flex items-center justify-between gap-3">
