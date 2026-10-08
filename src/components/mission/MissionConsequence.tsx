@@ -17,7 +17,7 @@ export const MissionConsequence: React.FC<MissionConsequenceProps> = ({
 }) => {
   const [showSymbols, setShowSymbols] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
-  const concise = (value: string, max = 155) => { const first = value.split(/(?<=[.!?])\\s+/)[0]; return first.length <= max ? first : value.slice(0, max).replace(/\\s+\\S*$/, '') + '…'; };
+  const concise = (value: string, max = 155) => { const first = value.split(/(?<=[.!?])\s+/)[0]; return first.length <= max ? first : value.slice(0, max).replace(/\s+\S*$/, '') + '…'; };
   const chosenActionId = state.chosenCollectiveActionId || mission.actions[0].id;
   const chosenAction = mission.actions.find((a) => a.id === chosenActionId) || mission.actions[0];
 
