@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MissionDef, RoomState } from '../../types/game';
 import { DiscoveryCard } from '../cards/CardView';
 import { socketService } from '../../services/socket';
-import { CheckCircle2, AlertTriangle, ArrowRight, ShieldCheck, Sparkles, BookOpen, Info, Waves, Lightbulb } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, ArrowRight, ShieldCheck, Sparkles, BookOpen, Info, Waves, Lightbulb, Award } from 'lucide-react';
 
 interface MissionConsequenceProps {
   mission: MissionDef;
@@ -16,6 +16,15 @@ export const MissionConsequence: React.FC<MissionConsequenceProps> = ({
   myPlayerId,
 }) => {
   const [showSymbols, setShowSymbols] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
+  useEffect(() => {
+    const key = `entre-nos-celebrated-${state.roomCode}-${mission.id}`;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, '1');
+    setShowCelebration(true);
+    const timer = window.setTimeout(() => setShowCelebration(false), 3800);
+    return () => window.clearTimeout(timer);
+  }, [mission.id, state.roomCode]);
   const [showDetails, setShowDetails] = useState(false);
   const concise = (value: string, max = 155) => { const first = value.split(/(?<=[.!?])\s+/)[0]; return first.length <= max ? first : value.slice(0, max).replace(/\s+\S*$/, '') + '…'; };
   const chosenActionId = state.chosenCollectiveActionId || mission.actions[0].id;
@@ -40,6 +49,16 @@ export const MissionConsequence: React.FC<MissionConsequenceProps> = ({
 
   return (
     <div className="flex flex-col gap-6 w-full max-w-5xl mx-auto text-slate-100 animate-in fade-in">
+      {showCelebration && <div className="fixed inset-0 z-[90] flex items-center justify-center bg-slate-950/80 px-4" role="dialog" aria-modal="true" aria-label={isLastMission ? 'Jornada concluída' : 'Medalha conquistada'}>
+        <div className="relative w-full max-w-sm rounded-3xl border-2 border-amber-400 bg-slate-900 p-8 text-center shadow-2xl motion-safe:animate-in motion-safe:zoom-in-50 motion-safe:fade-in motion-safe:duration-700">
+          <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">{Array.from({length: 12}, (_, i) => <Sparkles key={i} className="absolute w-5 h-5 text-amber-300 motion-safe:animate-pulse" style={{top: `${10 + (i * 37) % 80}%`,left: `${5 + (i * 29) % 90}%`,animationDelay: `${i * 0.13}s`}} />)}</div>
+          <Award className="relative mx-auto h-24 w-24 text-amber-300 motion-safe:animate-bounce" aria-hidden="true"/>
+          <h2 className="relative mt-4 text-2xl font-black text-amber-200">{isLastMission ? 'Vila dos Encontros concluída!' : 'Nova conquista!'}</h2>
+          <p className="relative mt-3 text-lg font-semibold">{mission.discovery.title}</p>
+          <p className="relative mt-2 text-sm text-slate-300">{isLastMission ? 'Quatro missões, quatro descobertas. Sua jornada merece ser celebrada!' : `Missão ${completedCount} de 4 concluída. Você ganhou uma nova descoberta!`}</p>
+          <button type="button" autoFocus onClick={() => setShowCelebration(false)} className="relative mt-6 rounded-xl bg-amber-400 px-6 py-3 font-bold text-slate-950 focus-visible:outline focus-visible:outline-4 focus-visible:outline-white">Continuar jornada</button>
+        </div>
+      </div>}
       {/* Completion recognition: progress, not moral correctness. */}
       <section role="status" aria-live="polite" className="rounded-3xl border border-amber-500/60 bg-gradient-to-r from-amber-950/50 via-slate-900 to-teal-950/40 p-5 sm:p-7 shadow-xl">
         <div className="flex items-center gap-4">
