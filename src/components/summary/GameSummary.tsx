@@ -1,0 +1,201 @@
+import React from 'react';
+import { RoomState } from '../../types/game';
+import { MISSIONS } from '../../data/missions';
+import { CharacterAvatar } from '../characters/CharacterAvatar';
+import { Award, CheckCircle2, Users, Compass, Sparkles, MessageSquare, RotateCcw, ShieldCheck } from 'lucide-react';
+
+interface GameSummaryProps {
+  state: RoomState;
+  myPlayerId: string;
+  onOpenFeedback: () => void;
+  onRestartGame: () => void;
+}
+
+export const GameSummary: React.FC<GameSummaryProps> = ({
+  state,
+  myPlayerId,
+  onOpenFeedback,
+  onRestartGame,
+}) => {
+  const completedMissions = MISSIONS.filter((m) =>
+    state.completedMissionIds.includes(m.id)
+  );
+
+  const totalPerspectivesExplored = state.historyLog.reduce(
+    (acc, h) => acc + h.perspectivesExploredCount,
+    0
+  );
+
+  const reconsiderationsCount = state.historyLog.filter(
+    (h) => h.reconsiderationOccurred
+  ).length;
+
+  return (
+    <div className="flex flex-col gap-6 w-full max-w-4xl mx-auto text-slate-100 animate-in fade-in">
+      {/* Header Banner */}
+      <div className="bg-gradient-to-br from-teal-950/60 via-slate-900 to-slate-950 border border-teal-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl text-center relative overflow-hidden">
+        <div className="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-300 border border-amber-400/40 flex items-center justify-center mx-auto mb-3 shadow-lg">
+          <Award className="w-9 h-9" />
+        </div>
+
+        <span className="text-xs font-bold uppercase tracking-widest text-teal-300 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/30">
+          Jornada Concluída com Sucesso
+        </span>
+
+        <h1 className="text-2xl sm:text-4xl font-black text-slate-100 mt-2 mb-2">
+          Guardiões da Convivência
+        </h1>
+
+        <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto">
+          A equipe atuou colaborativamente na Vila dos Encontros, articulando escuta atenta, urbanidade e responsabilidade com o interesse público.
+        </p>
+      </div>
+
+      {/* Aggregate Collective Indicators (No moral ranking!) */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 text-center shadow-lg">
+          <div className="text-2xl sm:text-3xl font-black text-teal-400">
+            {completedMissions.length}
+          </div>
+          <div className="text-xs font-semibold text-slate-300 mt-1">
+            Missões Cumpridas
+          </div>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 text-center shadow-lg">
+          <div className="text-2xl sm:text-3xl font-black text-amber-400">
+            {state.unlockedDiscoveries.length}/4
+          </div>
+          <div className="text-xs font-semibold text-slate-300 mt-1">
+            Descobertas Coletivas
+          </div>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 text-center shadow-lg">
+          <div className="text-2xl sm:text-3xl font-black text-blue-400">
+            {totalPerspectivesExplored}
+          </div>
+          <div className="text-xs font-semibold text-slate-300 mt-1">
+            Perspectivas Ouvidas
+          </div>
+        </div>
+
+        <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 text-center shadow-lg">
+          <div className="text-2xl sm:text-3xl font-black text-rose-400">
+            {reconsiderationsCount}
+          </div>
+          <div className="text-xs font-semibold text-slate-300 mt-1">
+            Reconsiderações
+          </div>
+        </div>
+      </div>
+
+      {/* Discoveries badges showcase */}
+      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-6 shadow-xl space-y-3">
+        <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-amber-400" />
+          Pilares e Descobertas Conquistadas pelo Coletivo
+        </h3>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          {[
+            {
+              key: 'escuta',
+              title: 'Escuta Ativa',
+              desc: 'Abrir espaço seguro para vozes ainda não ouvidas sem impor respostas apressadas.',
+            },
+            {
+              key: 'respeito',
+              title: 'Respeito e Dignidade',
+              desc: 'Urbanidade firme mesmo sob pressão, separando correções técnicas de ofensas pessoais.',
+            },
+            {
+              key: 'responsabilidade',
+              title: 'Responsabilidade e Probidade',
+              desc: 'Coragem para retificar falhas e lealdade republicana irrestrita ao interesse público.',
+            },
+            {
+              key: 'orientacao',
+              title: 'Orientação Clara',
+              desc: 'Acolher a sociedade com empatia e equidade, respeitando os limites da função pública.',
+            },
+          ].map((disc) => {
+            const hasDisc = state.unlockedDiscoveries.includes(disc.key as any);
+            return (
+              <div
+                key={disc.key}
+                className={`p-3.5 rounded-2xl border flex items-start gap-3 transition-all ${
+                  hasDisc
+                    ? 'bg-amber-950/30 border-amber-500/40 text-amber-200'
+                    : 'bg-slate-950 border-slate-800 text-slate-500'
+                }`}
+              >
+                <div
+                  className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 ${
+                    hasDisc ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-600'
+                  }`}
+                >
+                  <CheckCircle2 className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="font-bold text-sm text-slate-100">{disc.title}</div>
+                  <div className="text-xs text-slate-400 leading-snug mt-0.5">{disc.desc}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Roster of participants */}
+      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-xl">
+        <h3 className="text-base font-bold text-slate-100 mb-3 flex items-center gap-2">
+          <Users className="w-5 h-5 text-teal-400" />
+          Guardiões Participantes
+        </h3>
+
+        <div className="flex flex-wrap items-center gap-3">
+          {Object.values(state.players).map((p) => (
+            <div
+              key={p.id}
+              className="flex items-center gap-2 px-3 py-2 rounded-2xl bg-slate-950 border border-slate-800 shadow-sm"
+            >
+              <CharacterAvatar characterId={p.characterId} variantIndex={p.variantIndex} size="sm" />
+              <div>
+                <div className="font-bold text-xs text-slate-200">{p.nickname}</div>
+                <div className="text-[10px] text-slate-400">
+                  {p.isHost ? 'Anfitrião da Sala' : 'Guardião'}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Footer controls */}
+      <div className="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="text-xs text-slate-400 text-center sm:text-left">
+          Avaliem a experiência para apoiar aprimoramentos no programa pedagógico.
+        </div>
+
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <button
+            onClick={onOpenFeedback}
+            className="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 font-bold text-xs border border-amber-500/30 flex items-center justify-center gap-2 transition-all shadow-md"
+          >
+            <MessageSquare className="w-4 h-4" />
+            <span>Avaliar Experiência</span>
+          </button>
+
+          <button
+            onClick={onRestartGame}
+            className="flex-1 sm:flex-none px-6 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 text-slate-950 font-black text-xs shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95"
+          >
+            <RotateCcw className="w-4 h-4" />
+            <span>Jogar Novamente</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
