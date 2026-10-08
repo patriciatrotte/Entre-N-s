@@ -64,7 +64,7 @@ export const MissionSituation: React.FC<MissionSituationProps> = ({
         </div>
         {showHelp && <div className="mt-3 p-3 bg-slate-950 rounded-xl text-sm text-slate-200" role="note">📖 História: conheça a situação. ◈ Fatos: observe o que sabemos e o que ainda é incerto. 👥 Perspectivas: escute os envolvidos. 💡 Reflexão: pense antes de decidir. Toque no símbolo de informação sempre que quiser rever este guia.</div>}
       </header>
-      <NarrationControl text={[mission.situation.context, mission.situation.trigger, ...mission.situation.knownFacts, ...mission.situation.uncertainties].join(" ")} />
+      <NarrationControl key={`${mission.id}-${step}`} text={step === 0 ? [mission.situation.context, mission.situation.trigger].join(" ") : step === 1 ? [...mission.situation.knownFacts, ...mission.situation.uncertainties].join(" ") : step === 2 ? mission.perspectives.filter(p => state.sharedPerspectiveIds.includes(p.id) || state.perspectiveAssignments?.[p.id] === myPlayerId).map(p => `${p.actorName}. ${p.text}`).join(" ") : `Para refletir. O que você considera importante antes de escolher?`} />
       <section className="bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-7 space-y-4" aria-live="polite">
         {step === 0 && <>
           <div className="flex items-center gap-3"><BookOpen className="w-7 h-7 text-teal-300" aria-hidden="true"/><span className="text-sm text-teal-300">A história</span></div>
