@@ -22,7 +22,8 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ state, myPlayerId, onOpenR
   const totalConnected = connectedPlayers.length;
   const allReady = connectedPlayers.length >= 1 && connectedPlayers.every((p) => p.isReady);
 
-  const isSolo = Object.values(state.players).some(p => p.isBot);
+  // Bots are added when START_GAME runs, so the lobby must use the selected mode.
+  const isSolo = sessionStorage.getItem('entre-nos-mode') === 'solo' || Object.values(state.players).some(p => p.isBot);
   const inviteUrl = `${window.location.origin}?room=${state.roomCode}`;
 
   const handleCopyLink = () => {
