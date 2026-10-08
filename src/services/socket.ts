@@ -7,7 +7,6 @@ type PowerListener = (msg: Extract<ServerMessage, { type: 'POWER_ACTIVATED' }>) 
 type ConnectionListener = (connected: boolean) => void;
 
 class GameSocketService {
-  private ws: WebSocket | null = null;
   private stateListeners = new Set<StateListener>();
   private errorListeners = new Set<ErrorListener>();
   private notificationListeners = new Set<NotificationListener>();
@@ -19,14 +18,13 @@ class GameSocketService {
   public roomCode: string | null = null;
   public sessionToken: string | null = null;
 
-  private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private intentionallyClosed = false;
 
   constructor() {
     // Restore session credentials from localStorage if present
-    const savedToken = localStorage.getItem('guardioes_session_token');
-    const savedRoom = localStorage.getItem('guardioes_room_code');
-    const savedPid = localStorage.getItem('guardioes_player_id');
+    const savedToken = sessionStorage.getItem('guardioes_session_token');
+    const savedRoom = sessionStorage.getItem('guardioes_room_code');
+    const savedPid = sessionStorage.getItem('guardioes_player_id');
     if (savedToken && savedRoom && savedPid) {
       this.sessionToken = savedToken;
       this.roomCode = savedRoom;
@@ -34,88 +32,51 @@ class GameSocketService {
     }
   }
 
-  public connect(): Promise<void> {
-    return new Promise((resolve) => {
-      if (this.ws && (this.ws.readyState === WebSocket.OPEN || this.ws.readyState === WebSocket.CONNECTING)) {
-        resolve();
-        return;
-      }
+  private localMode = sessionStorage.getItem('entre-nos-mode') === 'solo';
+  private pollTimer: ReturnType<typeof setTimeout> | null = null;
+  private queue: Promise<void> = Promise.resolve();
+  private localConnection = {readyState: 1, send: (data: string) => this.handleServerMessage(JSON.parse(data))};
 
-      this.intentionallyClosed = false;
-      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const wsUrl = `${protocol}//${window.location.host}`;
-
-      try {
-        this.ws = new WebSocket(wsUrl);
-
-        this.ws.onopen = () => {
-          this.isConnected = true;
-          this.notifyConnection(true);
-
-          // If we had a prior session, attempt auto-reconnect
-          if (this.sessionToken && this.roomCode) {
-            this.send({
-              type: 'JOIN_ROOM',
-              roomCode: this.roomCode,
-              nickname: localStorage.getItem('guardioes_nickname') || 'Guardião',
-              characterId: (localStorage.getItem('guardioes_character') as any) || 'alex',
-              variantIndex: Number(localStorage.getItem('guardioes_variant')) || 0,
-              sessionToken: this.sessionToken,
-            });
-          }
-
-          resolve();
-        };
-
-        this.ws.onmessage = (event) => {
-          try {
-            const data: ServerMessage = JSON.parse(event.data);
-            this.handleServerMessage(data);
-          } catch (err) {
-            console.error('Failed to parse WS message:', err);
-          }
-        };
-
-        this.ws.onerror = (err) => {
-          console.warn('WebSocket error:', err);
-        };
-
-        this.ws.onclose = () => {
-          this.isConnected = false;
-          this.notifyConnection(false);
-          if (!this.intentionallyClosed) {
-            this.scheduleReconnect();
-          }
-        };
-      } catch (err) {
-        console.error('WS init exception:', err);
-        this.scheduleReconnect();
-        resolve();
-      }
-    });
+  public async connect(): Promise<void> {
+    this.intentionallyClosed = false;
+    if (this.localMode) {
+      const engine = await import('../game/engine');
+      const saved = sessionStorage.getItem('entre-nos-solo');
+      if (saved) {try {engine.restore(JSON.parse(saved));} catch {sessionStorage.removeItem('entre-nos-solo');}}
+    }
+    this.isConnected = true;
+    this.notifyConnection(true);
+    if (this.sessionToken && this.roomCode) this.send({type:'JOIN_ROOM',roomCode:this.roomCode,sessionToken:this.sessionToken,nickname:localStorage.getItem('guardioes_nickname') || 'Guardião',characterId:(localStorage.getItem('guardioes_character') as any) || 'alex',variantIndex:Number(localStorage.getItem('guardioes_variant')) || 0});
   }
 
-  private scheduleReconnect() {
-    if (this.reconnectTimer) return;
-    this.reconnectTimer = setTimeout(() => {
-      this.reconnectTimer = null;
-      if (!this.isConnected && !this.intentionallyClosed) {
-        this.connect();
-      }
-    }, 2500);
+  public setSoloMode(solo: boolean) {
+    this.intentionallyClosed = false;
+    this.localMode = solo;
+    sessionStorage.setItem('entre-nos-mode',solo ? 'solo' : 'online');
   }
 
   public send(msg: ClientMessage) {
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify(msg));
-    } else {
-      // Connect first then send
-      this.connect().then(() => {
-        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-          this.ws.send(JSON.stringify(msg));
-        }
+    this.queue = this.queue.then(async () => {
+      if (this.localMode) {
+        const engine = await import('../game/engine');
+        engine.handleClientMessage(this.localConnection,msg);
+        sessionStorage.setItem('entre-nos-solo',JSON.stringify(engine.snapshot()));
+      } else await this.request(msg);
+    }).catch(error => this.errorListeners.forEach(l => l(error.message || 'Falha na conexão')));
+  }
+
+  private async request(message?: ClientMessage) {
+    const response = await fetch('/api/game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message,sessionToken:this.sessionToken,roomCode:this.roomCode})});
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'Não foi possível conectar à sala.');
+    for (const frame of data.frames) this.handleServerMessage(frame);
+    if (this.pollTimer) clearTimeout(this.pollTimer);
+    if (this.roomCode && !this.intentionallyClosed) this.pollTimer = setTimeout(() => {
+      this.queue = this.queue.then(() => this.request()).catch(error => {
+        this.errorListeners.forEach(l => l(error.message));
+        if (!this.intentionallyClosed) this.pollTimer = setTimeout(() => this.send({type:'JOIN_ROOM',roomCode:this.roomCode!,sessionToken:this.sessionToken!,nickname:localStorage.getItem('guardioes_nickname') || 'Guardião',characterId:(localStorage.getItem('guardioes_character') as any) || 'alex',variantIndex:Number(localStorage.getItem('guardioes_variant')) || 0}),3000);
       });
-    }
+    },1500);
   }
 
   private handleServerMessage(msg: ServerMessage) {
@@ -125,9 +86,9 @@ class GameSocketService {
         this.myPlayerId = msg.playerId;
         this.sessionToken = msg.sessionToken;
 
-        localStorage.setItem('guardioes_session_token', msg.sessionToken);
-        localStorage.setItem('guardioes_room_code', msg.roomCode);
-        localStorage.setItem('guardioes_player_id', msg.playerId);
+        sessionStorage.setItem('guardioes_session_token', msg.sessionToken);
+        sessionStorage.setItem('guardioes_room_code', msg.roomCode);
+        sessionStorage.setItem('guardioes_player_id', msg.playerId);
 
         this.stateListeners.forEach((l) => l(msg.state));
         break;
@@ -180,17 +141,19 @@ class GameSocketService {
   }
 
   public leaveRoom() {
+    const credentials = {sessionToken:this.sessionToken,roomCode:this.roomCode};
+    if (this.localMode) import('../game/engine').then(engine => engine.handleClientDisconnect(this.localConnection));
+    else fetch('/api/game',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...credentials,message:{type:'LEAVE_ROOM'}}),keepalive:true}).catch(()=>{});
     this.intentionallyClosed = true;
-    localStorage.removeItem('guardioes_session_token');
-    localStorage.removeItem('guardioes_room_code');
-    localStorage.removeItem('guardioes_player_id');
+    if (this.pollTimer) clearTimeout(this.pollTimer);
+    sessionStorage.removeItem('entre-nos-solo');
+    sessionStorage.removeItem('guardioes_session_token');
+    sessionStorage.removeItem('guardioes_room_code');
+    sessionStorage.removeItem('guardioes_player_id');
     this.roomCode = null;
     this.myPlayerId = null;
     this.sessionToken = null;
-    if (this.ws) {
-      this.ws.close();
-      this.ws = null;
-    }
+
   }
 }
 
