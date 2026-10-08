@@ -84,7 +84,7 @@ export const MissionConsequence: React.FC<MissionConsequenceProps> = ({
         {isLastMission && <p className="mt-4 text-teal-200 font-semibold">Você percorreu as quatro missões! A avaliação final permitirá revisitar o que aprendeu.</p>}
       </section>
 
-      <NarrationControl text={[chosenAction.title, chosenAction.consequenceDetails, chosenAction.pedagogicalFeedback, mission.discovery.title, mission.discovery.description].join(" ")} />
+      <NarrationControl key={`${mission.id}-outcome`} text={[chosenAction.title, chosenAction.consequenceDetails, chosenAction.pedagogicalFeedback].join(" ")} />
       {/* Concise, icon-led outcome. Full pedagogical content remains available. */}
       <section className="bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-7 space-y-5">
         <div className="flex items-center justify-between gap-3">
