@@ -20,8 +20,9 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ state, myPlayerId, onOpenR
 
   const connectedPlayers = Object.values(state.players).filter((p) => p.isConnected);
   const totalConnected = connectedPlayers.length;
-  const allReady = connectedPlayers.length >= 2 && connectedPlayers.every((p) => p.isReady);
+  const allReady = connectedPlayers.length >= 1 && connectedPlayers.every((p) => p.isReady);
 
+  const isSolo = Object.values(state.players).some(p => p.isBot);
   const inviteUrl = `${window.location.origin}?room=${state.roomCode}`;
 
   const handleCopyLink = () => {
@@ -52,10 +53,10 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ state, myPlayerId, onOpenR
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/30">
-                Sala de Convivência Aberta
+                {isSolo ? 'Partida com o computador' : 'Sala de Convivência Aberta'}
               </span>
               <span className="text-xs text-slate-400">
-                2 a 6 Guardiões
+                1 a 6 participantes • modo solo disponível
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-slate-100 mt-1">
@@ -109,7 +110,7 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ state, myPlayerId, onOpenR
               </h2>
 
               <span className="text-xs text-slate-400">
-                {totalConnected < 2 ? 'Mínimo de 2 participantes' : 'Prontos para começar'}
+                {totalConnected < 2 ? 'Você pode jogar com o computador' : 'Prontos para começar'}
               </span>
             </div>
 
@@ -198,11 +199,11 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ state, myPlayerId, onOpenR
               {isHost && (
                 <button
                   onClick={handleStartGame}
-                  disabled={totalConnected < 2}
+                  disabled={!allReady}
                   className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 text-slate-950 font-black text-xs sm:text-sm shadow-xl flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <Play className="w-4 h-4 fill-current" />
-                  <span>Iniciar Partida</span>
+                  <span>{totalConnected === 1 ? 'Jogar com o computador' : 'Iniciar Partida'}</span>
                 </button>
               )}
 
