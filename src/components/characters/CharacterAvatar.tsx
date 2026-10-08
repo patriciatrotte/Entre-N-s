@@ -24,6 +24,8 @@ export const CharacterAvatar: React.FC<CharacterAvatarProps> = ({
   className = '',
 }) => {
   const char = CHARACTERS[characterId] || CHARACTERS.alex;
+  const [imageFailed, setImageFailed] = React.useState(false);
+  const avatarSrc = `/characters/${characterId}.png`;
   const variant = AVATAR_VARIANTS[variantIndex % AVATAR_VARIANTS.length];
 
   const sizeDimensions = {
@@ -133,9 +135,13 @@ export const CharacterAvatar: React.FC<CharacterAvatarProps> = ({
   return (
     <div className={`relative inline-flex items-center justify-center select-none ${className}`}>
       <div className={`relative rounded-full overflow-hidden shadow-lg border-2 ${char.borderColor} ${sizeDimensions}`}>
-        <svg viewBox="0 0 100 100" className="w-full h-full">
-          {renderCharacterSvg()}
-        </svg>
+        {!imageFailed ? (
+          <img src={avatarSrc} alt={char.name} className="w-full h-full object-cover" onError={() => setImageFailed(true)} />
+        ) : (
+          <svg viewBox="0 0 100 100" className="w-full h-full" aria-label={char.name} role="img">
+            {renderCharacterSvg()}
+          </svg>
+        )}
 
         {/* Variant color highlight aura */}
         <div
