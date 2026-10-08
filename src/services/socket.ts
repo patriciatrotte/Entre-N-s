@@ -52,6 +52,7 @@ class GameSocketService {
   public setSoloMode(solo: boolean) {
     this.intentionallyClosed = false;
     this.localMode = solo;
+    if (this.pollTimer) clearTimeout(this.pollTimer);
     sessionStorage.setItem('entre-nos-mode',solo ? 'solo' : 'online');
   }
 
@@ -147,6 +148,7 @@ class GameSocketService {
     this.intentionallyClosed = true;
     if (this.pollTimer) clearTimeout(this.pollTimer);
     sessionStorage.removeItem('entre-nos-solo');
+    sessionStorage.removeItem('entre-nos-mode');
     sessionStorage.removeItem('guardioes_session_token');
     sessionStorage.removeItem('guardioes_room_code');
     sessionStorage.removeItem('guardioes_player_id');
