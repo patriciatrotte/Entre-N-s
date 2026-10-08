@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { NarrationControl } from './NarrationControl';
 import { MissionDef, RoomState } from '../../types/game';
 import { PerspectiveCard } from '../cards/CardView';
 import { REGIONS } from '../../data/regions';
@@ -63,6 +64,7 @@ export const MissionSituation: React.FC<MissionSituationProps> = ({
         </div>
         {showHelp && <div className="mt-3 p-3 bg-slate-950 rounded-xl text-sm text-slate-200" role="note">📖 História: conheça a situação. ◈ Fatos: observe o que sabemos e o que ainda é incerto. 👥 Perspectivas: escute os envolvidos. 💡 Reflexão: pense antes de decidir. Toque no símbolo de informação sempre que quiser rever este guia.</div>}
       </header>
+      <NarrationControl text={[mission.situation.context, mission.situation.trigger, ...mission.situation.knownFacts, ...mission.situation.uncertainties].join(" ")} />
       <section className="bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-7 space-y-4" aria-live="polite">
         {step === 0 && <>
           <div className="flex items-center gap-3"><BookOpen className="w-7 h-7 text-teal-300" aria-hidden="true"/><span className="text-sm text-teal-300">A história</span></div>
@@ -86,8 +88,7 @@ export const MissionSituation: React.FC<MissionSituationProps> = ({
         </>}
         {step === 3 && <>
           <div className="flex items-center gap-3"><HelpCircle className="w-7 h-7 text-violet-300" aria-hidden="true"/><span className="text-sm text-violet-300">Para refletir</span></div>
-          <p className="text-base leading-relaxed">{mission.situation.trigger}</p>
-          <p className="text-sm text-slate-300">O que você considera importante antes de escolher?</p>
+          <p className="text-base leading-relaxed">O que você considera importante antes de escolher?</p>
         </>}
         <button type="button" onClick={() => setShowFullText(v => !v)} aria-expanded={showFullText} className="text-sm text-teal-300 underline underline-offset-4">{showFullText ? 'Ocultar conteúdo completo' : 'Consultar conteúdo completo e nota institucional'}</button>
         {showFullText && <div className="space-y-3 rounded-xl bg-slate-950 p-4 text-sm leading-relaxed"><p>{mission.situation.context}</p><p>{mission.situation.trigger}</p><strong>Fatos conhecidos</strong><ul className="list-disc pl-5">{mission.situation.knownFacts.map((x,i)=><li key={i}>{x}</li>)}</ul><strong>Incertezas</strong><ul className="list-disc pl-5">{mission.situation.uncertainties.map((x,i)=><li key={i}>{x}</li>)}</ul><p><strong>Nota institucional:</strong> {mission.situation.institutionalNote}</p><p><strong>Objetivo pedagógico:</strong> {mission.pedagogicalGoal}</p></div>}
