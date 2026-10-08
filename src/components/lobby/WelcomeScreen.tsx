@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { CharacterId } from '../../types/game';
-import { CHARACTER_LIST, AVATAR_VARIANTS, CHARACTERS } from '../../data/characters';
+import { CHARACTER_LIST, CHARACTERS } from '../../data/characters';
 import { CharacterAvatar } from '../characters/CharacterAvatar';
 import { socketService } from '../../services/socket';
-import { Play, PlusCircle, LogIn, Sparkles, BookOpen, Users, Compass, HelpCircle } from 'lucide-react';
+import { Play, PlusCircle, LogIn, Sparkles, BookOpen, Compass, HelpCircle } from 'lucide-react';
 
 interface WelcomeScreenProps {
   onOpenRules: () => void;
@@ -23,9 +23,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
   const [characterId, setCharacterId] = useState<CharacterId>(
     (localStorage.getItem('guardioes_character') as any) || 'alex'
   );
-  const [variantIndex, setVariantIndex] = useState(
-    Number(localStorage.getItem('guardioes_variant')) || 0
-  );
+  const variantIndex = 0;
   const [roomCode, setRoomCode] = useState('');
 
   // Check URL query params for ?room=CODE
@@ -43,7 +41,6 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
     const cleanNick = nickname.trim() || 'Guardião';
     localStorage.setItem('guardioes_nickname', cleanNick);
     localStorage.setItem('guardioes_character', characterId);
-    localStorage.setItem('guardioes_variant', String(variantIndex));
 
     socketService.setSoloMode(mode === 'solo');
     socketService.send({
@@ -93,14 +90,12 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
         </h1>
 
         <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-serif">
-          Bem-vindos à <strong>Vila dos Encontros</strong>. Jogue com três companheiros virtuais para vivenciar dilemas éticos reais do serviço público. A modalidade em grupo está em desenvolvimento.
+          Na <strong>Vila dos Encontros</strong>, suas escolhas revelam diferentes caminhos para a convivência ética.
         </p>
       </div>
 
       {/* Main interaction card */}
       <div className="w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
-        <button type="button" onClick={() => setMode('solo')} className="w-full py-3 rounded-xl bg-amber-500 text-slate-950 font-bold">Jogar sozinho com companheiros virtuais</button>
-        {mode === 'solo' && <p className="text-sm text-amber-200">Partida neste dispositivo, com três personagens controlados pelo computador. O progresso fica salvo nesta aba. As avaliações não são enviadas ao organizador.</p>}
         {/* O multiplayer permanece no código para uma etapa futura. */}
         {false && <div>
         <div className="grid grid-cols-2 p-1.5 bg-slate-950 rounded-2xl border border-slate-800">
@@ -160,7 +155,6 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
             </div>
             <input
               type="text"
-              required
               maxLength={16}
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
@@ -175,7 +169,7 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
               <label className="text-xs font-bold text-slate-300">
                 Escolha seu Personagem:
               </label>
-              <span className="text-[11px] text-teal-400">Permite personagens repetidos</span>
+
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -218,37 +212,13 @@ export const WelcomeScreen: React.FC<WelcomeScreenProps> = ({
             )}
           </div>
 
-          {/* Visual Variant Selector */}
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-slate-300">
-              Variante Visual do Avatar:
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {AVATAR_VARIANTS.map((v) => (
-                <button
-                  key={v.id}
-                  type="button"
-                  onClick={() => setVariantIndex(v.id)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all flex items-center gap-2 ${
-                    variantIndex === v.id
-                      ? 'bg-teal-500 text-slate-950 border-teal-400 shadow-sm'
-                      : 'bg-slate-950 text-slate-300 border-slate-800 hover:bg-slate-850'
-                  }`}
-                >
-                  <span className={`w-2.5 h-2.5 rounded-full ${v.badgeColor}`} />
-                  <span>{v.label} ({v.suffix})</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Submit button */}
           <button
             type="submit"
             className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-teal-500 via-teal-400 to-emerald-500 hover:from-teal-400 hover:to-emerald-400 text-slate-950 font-black text-sm sm:text-base shadow-xl flex items-center justify-center gap-2 transition-all active:scale-98"
           >
             <Play className="w-5 h-5 fill-current" />
-            <span>{mode === 'solo' ? 'Começar com o computador' : mode === 'create' ? 'Criar e Entrar na Sala' : 'Entrar na Sala'}</span>
+            <span>{mode === 'solo' ? 'Começar' : mode === 'create' ? 'Criar e Entrar na Sala' : 'Entrar na Sala'}</span>
           </button>
         </form>
 
