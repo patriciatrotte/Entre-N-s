@@ -32,8 +32,7 @@ export const MissionReveal: React.FC<MissionRevealProps> = ({
 
   const handleStartCollectiveVoting = () => {
     socketService.send({
-      type: 'SUBMIT_COLLECTIVE_VOTE',
-      actionId: state.myChoice || mission.actions[0].id,
+      type: 'OPEN_COLLECTIVE_VOTE',
     });
   };
 

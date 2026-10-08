@@ -74,7 +74,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
                 O que você achou do jogo?
               </h2>
               <p className="text-xs text-slate-400">
-                Sua avaliação anônima apoia o aprimoramento pedagógico da ferramenta.
+                Sua avaliação apoia o aprimoramento pedagógico da ferramenta.
               </p>
             </div>
 
@@ -120,7 +120,7 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
                 onChange={(e) => setComment(e.target.value)}
                 maxLength={500}
                 rows={3}
-                placeholder="Compartilhe suas impressões de forma anônima e geral..."
+                placeholder="Compartilhe impressões gerais, sem nomes ou dados pessoais..."
                 className="w-full rounded-xl bg-slate-950 border border-slate-800 p-3 text-xs text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-teal-400 resize-none"
               />
             </div>

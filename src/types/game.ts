@@ -150,6 +150,8 @@ export interface PlayerSession {
   nickname: string;
   characterId: CharacterId;
   variantIndex: number;
+  lastSeenAt?: number;
+  isBot?: boolean;
   isHost: boolean;
   isReady: boolean;
   isConnected: boolean;
@@ -172,6 +174,7 @@ export interface RoomState {
   // Destination vote in Board
   destinationVotes: Record<string, RegionId>; // playerId -> regionId
   // Mission progression state
+  perspectiveAssignments?: Record<string, string>;
   sharedPerspectiveIds: string[]; // ids of perspectives shared with the entire room
   unlockedContextIds: string[]; // contexts unlocked via power or exploration
   revealedActors: string[]; // actors revealed via Bia's power
@@ -215,6 +218,8 @@ export type ClientMessage =
   | { type: 'CREATE_ROOM'; nickname: string; characterId: CharacterId; variantIndex: number }
   | { type: 'TOGGLE_READY' }
   | { type: 'START_GAME' }
+  | { type: 'EXPLORE_MISSION' }
+  | { type: 'OPEN_COLLECTIVE_VOTE' }
   | { type: 'SUBMIT_PRE_TEST'; answers: Record<string, string> }
   | { type: 'VOTE_DESTINATION'; regionId: RegionId }
   | { type: 'CONFIRM_DESTINATION' }
