@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MissionDef, RoomState } from '../../types/game';
 import { DiscoveryCard } from '../cards/CardView';
 import { socketService } from '../../services/socket';
-import { CheckCircle2, AlertTriangle, ArrowRight, ShieldCheck, Sparkles, BookOpen } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, ArrowRight, ShieldCheck, Sparkles, BookOpen, Info, Waves, Lightbulb } from 'lucide-react';
 
 interface MissionConsequenceProps {
   mission: MissionDef;
@@ -15,7 +15,9 @@ export const MissionConsequence: React.FC<MissionConsequenceProps> = ({
   state,
   myPlayerId,
 }) => {
-  const isHost = state.hostId === myPlayerId;
+  const [showSymbols, setShowSymbols] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
+  const concise = (value: string, max = 155) => { const first = value.split(/(?<=[.!?])\\s+/)[0]; return first.length <= max ? first : value.slice(0, max).replace(/\\s+\\S*$/, '') + '…'; };
   const chosenActionId = state.chosenCollectiveActionId || mission.actions[0].id;
   const chosenAction = mission.actions.find((a) => a.id === chosenActionId) || mission.actions[0];
 
@@ -62,72 +64,32 @@ export const MissionConsequence: React.FC<MissionConsequenceProps> = ({
         {isLastMission && <p className="mt-4 text-teal-200 font-semibold">Você percorreu as quatro missões! A avaliação final permitirá revisitar o que aprendeu.</p>}
       </section>
 
-      {/* Top Banner */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-7 shadow-2xl relative overflow-hidden">
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-              Desfecho Narrativo e Aprendizados
-            </span>
-            <span className="text-xs text-slate-400">
-              Missão {mission.code} • {mission.title}
-            </span>
-          </div>
-
-          <div className="text-xs font-bold text-amber-400">
-            Missões Cumpridas: {completedCount} de 4
-          </div>
+      {/* Concise, icon-led outcome. Full pedagogical content remains available. */}
+      <section className="bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-7 space-y-5">
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-sm text-teal-300 font-semibold">Missão {mission.code} · {mission.title}</p>
+          <button type="button" onClick={() => setShowSymbols(v => !v)} aria-expanded={showSymbols} aria-label="Explicação dos símbolos" className="p-2 rounded-full border border-slate-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-300"><Info className="w-5 h-5" /></button>
         </div>
-
-        <h2 className="text-2xl sm:text-3xl font-black text-slate-100 mt-1">
-          {isNonConsensual
-            ? 'Decisão Não Consensual: Dois Caminhos em Diálogo'
-            : `Ação Coletiva Escolhida: “${chosenAction.title}”`}
-        </h2>
-
-        {/* Narrative Outcome Description */}
-        {!isNonConsensual ? (
-          <div className="mt-4 space-y-4">
-            <div className="p-4 sm:p-5 rounded-2xl bg-slate-950/80 border border-slate-800 text-sm sm:text-base text-slate-200 leading-relaxed font-serif shadow-inner">
-              <strong className="text-teal-400 block mb-1 text-xs uppercase tracking-wider font-sans">
-                Desdobramentos na Vila dos Encontros:
-              </strong>
-              {chosenAction.consequenceDetails}
-            </div>
-
-            <div className="p-4 rounded-2xl bg-teal-950/40 border border-teal-500/40 text-xs sm:text-sm text-teal-200">
-              <strong className="text-teal-300 block mb-1">Feedback Pedagógico da Decisão:</strong>
-              {chosenAction.pedagogicalFeedback}
-            </div>
+        {showSymbols && <p role="note" className="bg-slate-950 rounded-xl p-3 text-sm text-slate-300">〰️ Ondas: consequências da decisão. 💡 Lâmpada: convite à reflexão. 🏅 Medalha: descoberta conquistada. O conteúdo detalhado continua disponível por escrito.</p>}
+        <h2 className="text-lg sm:text-xl font-bold">{isNonConsensual ? 'Dois caminhos em diálogo' : chosenAction.title}</h2>
+        {isNonConsensual ? <div className="space-y-3">
+          <p className="text-sm text-amber-200">A equipe terminou dividida. Compare os desdobramentos possíveis.</p>
+          {nonConsensualActions.map(act => act && <div key={act.id} className="bg-slate-950 rounded-xl p-4"><p className="font-bold">{act.title}</p><p className="text-sm text-slate-300 mt-2">{concise(act.consequenceDetails)}</p></div>)}
+        </div> : <>
+          <div className="flex gap-3 items-start bg-slate-950 rounded-xl p-4">
+            <Waves className="w-7 h-7 shrink-0 text-cyan-300" aria-label="Consequência" />
+            <p className="text-sm sm:text-base leading-relaxed">{concise(chosenAction.consequenceDetails)}</p>
           </div>
-        ) : (
-          /* Non-consensual comparison */
-          <div className="mt-4 space-y-4">
-            <div className="p-4 rounded-2xl bg-amber-950/40 border border-amber-500/40 text-xs sm:text-sm text-amber-200">
-              <strong className="text-amber-300 block mb-1 flex items-center gap-1.5">
-                <AlertTriangle className="w-4 h-4 text-amber-400" />
-                Divergência Persistente:
-              </strong>
-              O grupo encerrou a deliberação com votos divididos igualmente entre duas alternativas. No serviço público real, quando o consenso não é atingido, é fundamental ponderar os riscos e condições de cada vertente:
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {nonConsensualActions.map((act) => act && (
-                <div key={act.id} className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
-                  <div className="font-bold text-sm text-slate-100">{act.title}</div>
-                  <div className="text-xs text-slate-300 font-serif leading-relaxed">
-                    {act.consequenceDetails}
-                  </div>
-                  <div className="text-[11px] text-teal-300 pt-2 border-t border-slate-800">
-                    {act.pedagogicalFeedback}
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div className="flex gap-3 items-start bg-violet-950/30 rounded-xl p-4">
+            <Lightbulb className="w-7 h-7 shrink-0 text-violet-300" aria-label="Para refletir" />
+            <p className="text-sm sm:text-base leading-relaxed">{concise(chosenAction.pedagogicalFeedback)}</p>
           </div>
-        )}
-      </div>
+        </>}
+        <button type="button" onClick={() => setShowDetails(v => !v)} aria-expanded={showDetails} className="text-sm text-teal-300 underline underline-offset-4">{showDetails ? 'Ocultar explicações' : 'Saiba mais · explicações completas'}</button>
+        {showDetails && <div className="bg-slate-950 rounded-xl p-4 space-y-4 text-sm leading-relaxed">
+          {isNonConsensual ? nonConsensualActions.map(act => act && <div key={act.id}><strong>{act.title}</strong><p className="mt-1">{act.consequenceDetails}</p><p className="mt-1 text-teal-200">{act.pedagogicalFeedback}</p></div>) : <><p>{chosenAction.consequenceDetails}</p><p className="text-teal-200">{chosenAction.pedagogicalFeedback}</p></>}
+        </div>}
+      </section>
 
       {/* Discovery unlocked card */}
       <DiscoveryCard discovery={mission.discovery} />
