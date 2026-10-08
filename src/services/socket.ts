@@ -60,7 +60,20 @@ class GameSocketService {
     this.queue = this.queue.then(async () => {
       if (this.localMode) {
         const engine = await import('../game/engine');
-        engine.handleClientMessage(this.localConnection,msg);
+        if (msg.type === 'JOIN_ROOM' && this.sessionToken && this.roomCode) {
+          const saved = engine.snapshot();
+          const entry = saved.tokens.find(([token]) => token === this.sessionToken)?.[1];
+          if (entry?.roomCode === this.roomCode && saved.rooms.some(([code, room]) => code === this.roomCode && !!room.players[entry.playerId])) {
+            // Reconnect the browser's fresh in-memory connection to its persisted solo session.
+            engine.handleClientMessage(this.localConnection,msg);
+          } else {
+            this.clearSessionCredentials();
+            this.errorListeners.forEach(l => l('A partida anterior não pôde ser recuperada. Inicie uma nova partida.'));
+            return;
+          }
+        } else {
+          engine.handleClientMessage(this.localConnection,msg);
+        }
         sessionStorage.setItem('entre-nos-solo',JSON.stringify(engine.snapshot()));
       } else await this.request(msg);
     }).catch(error => this.errorListeners.forEach(l => l(error.message || 'Falha na conexão')));
@@ -139,6 +152,15 @@ class GameSocketService {
 
   private notifyConnection(val: boolean) {
     this.connectionListeners.forEach((l) => l(val));
+  }
+
+  private clearSessionCredentials() {
+    sessionStorage.removeItem('guardioes_session_token');
+    sessionStorage.removeItem('guardioes_room_code');
+    sessionStorage.removeItem('guardioes_player_id');
+    this.roomCode = null;
+    this.myPlayerId = null;
+    this.sessionToken = null;
   }
 
   public leaveRoom() {
