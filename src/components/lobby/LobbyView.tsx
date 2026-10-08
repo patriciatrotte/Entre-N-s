@@ -45,6 +45,35 @@ export const LobbyView: React.FC<LobbyViewProps> = ({ state, myPlayerId, onOpenR
     socketService.send({ type: 'START_GAME' });
   };
 
+  if (isSolo) {
+    return <main className="mx-auto w-full max-w-3xl space-y-5 text-slate-100">
+      <header className="rounded-3xl border border-teal-500/30 bg-slate-900 p-5 sm:p-7">
+        <p className="text-sm font-semibold text-teal-300">Vila dos Encontros · Jornada individual</p>
+        <h1 className="mt-2 text-2xl sm:text-3xl font-black">Conheça sua equipe</h1>
+        <p className="mt-3 text-base leading-relaxed text-slate-200">Você vai enfrentar quatro situações e contar com três companheiros virtuais. Cada personagem traz um olhar diferente para ajudar na reflexão.</p>
+      </header>
+      <section aria-label="Companheiros da jornada" className="space-y-3">
+        {Object.values(state.players).map(player => {
+          const character = CHARACTERS[player.characterId] || CHARACTERS.alex;
+          const me = player.id === myPlayerId;
+          return <div key={player.id} className="flex items-center gap-4 rounded-2xl border border-slate-700 bg-slate-900 p-4">
+            <CharacterAvatar characterId={player.characterId} variantIndex={player.variantIndex} size="md" showBadge={false} />
+            <div className="min-w-0 flex-1">
+              <p className="text-lg font-bold">{character.name} {me && <span className="text-sm font-normal text-teal-300">· Seu personagem</span>}</p>
+              <p className="text-sm text-slate-200">{character.role}</p>
+              <details className="mt-2 text-sm text-slate-300"><summary className="cursor-pointer text-teal-300">Conhecer habilidade</summary><p className="mt-2"><strong>{character.powerName}:</strong> {character.powerDescription}</p></details>
+            </div>
+          </div>;
+        })}
+      </section>
+      <p className="rounded-xl bg-slate-900 p-4 text-sm text-slate-300">Você não precisa memorizar as habilidades agora. Elas serão apresentadas quando fizerem sentido na jornada.</p>
+      <div className="flex flex-col gap-3 sm:flex-row">
+        {onOpenRules && <button type="button" onClick={onOpenRules} className="rounded-xl border border-slate-600 px-5 py-3 text-base font-semibold">Como jogar</button>}
+        {!myPlayer?.isReady ? <button type="button" onClick={handleToggleReady} className="min-h-12 flex-1 rounded-xl bg-teal-500 px-6 py-3 text-base font-bold text-slate-950">Estou pronto para começar</button> : <button type="button" onClick={handleStartGame} disabled={!isHost || !allReady} className="min-h-12 flex-1 rounded-xl bg-teal-500 px-6 py-3 text-base font-bold text-slate-950 disabled:opacity-50">Começar a jornada →</button>}
+      </div>
+    </main>;
+  }
+
   return (
     <div className="flex flex-col gap-6 w-full max-w-5xl mx-auto text-slate-100 animate-in fade-in">
       {/* Top Welcome & Room Invitation Banner */}
