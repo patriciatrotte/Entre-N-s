@@ -51,7 +51,6 @@ export default function App() {
   };
 
   useEffect(() => {
-    socketService.connect();
 
     const unsubConnection = socketService.onConnection((conn) => {
       setIsConnected(conn);
@@ -78,6 +77,8 @@ export default function App() {
         'success'
       );
     });
+
+    void socketService.connect();
 
     return () => {
       unsubConnection();
