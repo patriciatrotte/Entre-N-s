@@ -28,6 +28,14 @@ export const MissionConsequence: React.FC<MissionConsequenceProps> = ({
   }, [mission.id, state.roomCode]);
   const [showDetails, setShowDetails] = useState(false);
   const concise = (value: string, max = 155) => { const first = value.split(/(?<=[.!?])\s+/)[0]; return first.length <= max ? first : value.slice(0, max).replace(/\s+\S*$/, '') + '…'; };
+  const dutyByMission: Record<string, { name: string; expected: string; reference: string; url: string }> = {
+    'missao-1': { name: 'Urbanidade e escuta respeitosa', expected: 'Acolha contribuições sem expor ou pressionar colegas e colaboradores.', reference: 'Lei nº 8.112/1990, art. 116, XI — dever de urbanidade.', url: 'https://www.planalto.gov.br/ccivil_03/leis/l8112compilado.htm' },
+    'missao-2': { name: 'Urbanidade no trato profissional', expected: 'Corrija o trabalho com objetividade, sem ironias ou desqualificação pessoal, independentemente do vínculo de quem participa.', reference: 'Lei nº 8.112/1990, art. 116, XI — dever de urbanidade.', url: 'https://www.planalto.gov.br/ccivil_03/leis/l8112compilado.htm' },
+    'missao-3': { name: 'Zelo e responsabilidade com informações', expected: 'Comunique inconsistências conhecidas e busque a correção pelos procedimentos institucionais.', reference: 'Lei nº 8.112/1990, art. 116, I e III — zelo e observância das normas.', url: 'https://www.planalto.gov.br/ccivil_03/leis/l8112compilado.htm' },
+    'missao-4': { name: 'Urbanidade no atendimento ao público', expected: 'Oriente a pessoa com respeito e clareza, observando as regras e os recursos disponíveis.', reference: 'Lei nº 8.112/1990, art. 116, XI — dever de urbanidade.', url: 'https://www.planalto.gov.br/ccivil_03/leis/l8112compilado.htm' }
+  };
+  const duty = dutyByMission[mission.id];
+  const [showDuty, setShowDuty] = useState(false);
   const chosenActionId = state.chosenCollectiveActionId || mission.actions[0].id;
   const chosenAction = mission.actions.find((a) => a.id === chosenActionId) || mission.actions[0];
 
@@ -109,6 +117,21 @@ export const MissionConsequence: React.FC<MissionConsequenceProps> = ({
         <button type="button" onClick={() => setShowDetails(v => !v)} aria-expanded={showDetails} className="text-sm text-teal-300 underline underline-offset-4">{showDetails ? 'Ocultar explicações' : 'Saiba mais · explicações completas'}</button>
         {showDetails && <div className="bg-slate-950 rounded-xl p-4 space-y-4 text-sm leading-relaxed">
           {isNonConsensual ? nonConsensualActions.map(act => act && <div key={act.id}><strong>{act.title}</strong><p className="mt-1">{act.consequenceDetails}</p><p className="mt-1 text-teal-200">{act.pedagogicalFeedback}</p></div>) : <><p>{chosenAction.consequenceDetails}</p><p className="text-teal-200">{chosenAction.pedagogicalFeedback}</p></>}
+        </div>}
+      </section>
+
+      {duty && <section className="rounded-2xl border border-amber-500/40 bg-slate-900 p-5" aria-label="Conheça seus deveres">
+        <div className="flex items-center gap-3">
+          <ShieldCheck className="h-7 w-7 shrink-0 text-amber-300" aria-hidden="true" />
+          <div className="flex-1"><p className="text-xs font-bold uppercase text-amber-300">Conheça seus deveres</p><h3 className="font-semibold">{duty.name}</h3></div>
+        </div>
+        <p className="mt-3 text-sm text-slate-200">{duty.expected}</p>
+        <button type="button" onClick={() => setShowDuty(v => !v)} aria-expanded={showDuty} className="mt-3 text-sm text-teal-300 underline underline-offset-4">{showDuty ? 'Ocultar fundamento' : 'Consultar fundamento'}</button>
+        {showDuty && <div className="mt-3 space-y-3 rounded-xl bg-slate-950 p-4 text-sm">
+          <p>{duty.reference}</p>
+          <a href={duty.url} target="_blank" rel="noopener noreferrer" className="text-teal-300 underline">Consultar legislação oficial</a>
+          <p className="text-slate-400">O dever é apresentado para orientação. A análise de uma conduta concreta cabe às instâncias competentes.</p>
+          <NarrationControl text={`${duty.name}. ${duty.expected}. ${duty.reference}`} />
         </div>}
       </section>
 
