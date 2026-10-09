@@ -28,3 +28,17 @@ Status: decisões de projeto decorrentes de teste manual da jornada Vila dos Enc
 - Enunciado padronizado para diagnósticos: **Como você agiria diante dessa situação?** Selecione a alternativa que mais se aproxima do que você pensa ou faria.
 - Prioridade: fundamentar os desafios normativos, compactar cartões, testar fluxo de votação coletiva e consequências, testes de regressão e revisão de conteúdo.
 - As outras jornadas (incluindo Entrelinhas) são propostas futuras, independentes da Vila e não devem ser anunciadas como prontas.
+
+
+## 6. Reconhecimento de deveres nas relações institucionais (decisão de 08/10/2026)
+- O jogo tem finalidade **educativa e preventiva**: ajudar o participante a reconhecer deveres éticos e padrões de conduta já estabelecidos, e a perceber suas implicações nas relações cotidianas. Não pretende aferir mudança imediata de comportamento, emitir diagnóstico de caráter ou decidir se uma infração ocorreu.
+- Representar interações entre **servidores, chefias, subordinados, estagiários, colaboradores, terceirizados, prestadores de serviços, cidadãos e representantes externos**. Não restringir a convivência ética às relações entre colegas nem retratar colaboradores não efetivos apenas como vítimas ou figurantes.
+- Usar exemplos cotidianos e proporcionais: caçoar, ironizar, desqualificar contribuição, expor erros desnecessariamente, interromper, elevar o tom para intimidar, tratar pessoas de modo desigual. **Criticar tecnicamente, discordar ou elevar a voz não constitui, isoladamente, infração**: o roteiro deve oferecer contexto e distinguir cobrança legítima de tratamento desrespeitoso.
+- Evidenciar os deveres e padrões relevantes, como urbanidade, respeito, impessoalidade, zelo e responsabilidade, com referência normativa ou institucional pertinente. **Não realizar enquadramento prévio nem prometer sanção específica**: fatos concretos, eventual apuração e responsabilização cabem às instâncias competentes.
+- Nas conclusões das missões, oferecer um bloco curto e opcional **“Conheça seus deveres”** (símbolo recorrente de balança), contendo: (a) dever ou princípio em jogo; (b) conduta esperada; (c) onde consultar o fundamento. A consequência narrativa permanece distinta da referência normativa.
+- Revisar editorialmente os exemplos das quatro missões para evitar expressões absolutas, consequências disciplinares inevitáveis e rótulos pessoais; manter nuances sem relativizar deveres conhecidos.
+
+## 7. Avaliação e roteiros futuros
+- A sondagem pré/pós existente não demonstra aprendizagem ou mudança comportamental imediata e atualmente carece de devolutiva individual coerente com a jornada. **Reavaliar sua obrigatoriedade antes do piloto**, sem apresentar resultados como mensuração de ética individual.
+- O **Espelho dos Guardiões**, experiência futura de identificação lúdica com arquétipos de decisão, deve ser tratado como roteiro separado, não como teste psicológico nem hierarquia moral. Nenhum arquétipo autoriza descumprimento de deveres.
+- Prioridade atual: estabilizar e validar a jornada com um participante humano e três companheiros virtuais. Multiplayer, login gov.br e outras jornadas permanecem desdobramentos futuros.
