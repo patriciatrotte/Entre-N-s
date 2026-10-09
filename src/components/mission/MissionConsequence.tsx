@@ -133,7 +133,7 @@ export const MissionConsequence: React.FC<MissionConsequenceProps> = ({
           <p className="text-slate-400">O dever é apresentado para orientação. A análise de uma conduta concreta cabe às instâncias competentes.</p>
           <NarrationControl text={`${duty.name}. ${duty.expected}. ${duty.reference}`} />
         </div>}
-      </section>
+      </section>}
 
       {/* Discovery unlocked card */}
       <DiscoveryCard discovery={mission.discovery} />
