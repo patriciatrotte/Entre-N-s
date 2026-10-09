@@ -10,7 +10,7 @@ export const MISSIONS: MissionDef[] = [
     title: 'Uma voz ainda não ouvida',
     regionId: 'praca',
     missionType: 'reflexiva',
-    pedagogicalGoal: 'Compreender a diferença entre pressionar por participação e construir condições reais de acolhimento e autonomia para colegas novatos.',
+    pedagogicalGoal: 'Reconhecer o valor da escuta e da urbanidade ao acolher contribuições de servidores e colaboradores, sem pressionar por exposição pública.',
     situation: {
       context: 'Na sala comunitária da Vila dos Encontros, a equipe debate a reformulação dos fluxos de atendimento aos cidadãos. Entre os presentes está Lucas, servidor recém-empossado há três semanas.',
       trigger: 'Durante toda a reunião de 45 minutos, decisões cruciais foram debatidas por colegas mais experientes, enquanto Lucas permaneceu em silêncio contínuo, apenas anotando em seu caderno.',
@@ -102,7 +102,7 @@ export const MISSIONS: MissionDef[] = [
       title: 'Escuta Ativa e Inclusão Segura',
       subtitle: 'Convivência não é forçar a fala, mas abrir espaço seguro',
       description: 'A inclusão real no serviço público reconhece que nem todo mundo se expressa no mesmo ritmo ou diante de plateias dominadas por veteranos. O acolhimento inteligente oferece múltiplos canais para a circulação de saberes.',
-      reflectionQuestion: 'Como criamos em nosso dia a dia espaços em que servidores novatos possam questionar sem receio de parecerem inadequados?',
+      reflectionQuestion: 'Como abrir espaço para que servidores, estagiários e colaboradores contribuam sem receio de exposição?',
       icon: 'Ear'
     },
     editorialInfo: {
@@ -240,7 +240,7 @@ export const MISSIONS: MissionDef[] = [
     title: 'O erro na entrega',
     regionId: 'oficina',
     missionType: 'fundamentada',
-    pedagogicalGoal: 'Compreender que o dever de transparência e correção tempestiva no serviço público supera o receio pessoal de exposição ou o ímpeto de ocultar falhas.',
+    pedagogicalGoal: 'Reconhecer o dever de zelo e responsabilidade com registros públicos, distinguindo erro corrigível de ocultação deliberada de informação.',
     situation: {
       context: 'A equipe da Oficina Coletiva acabou de consolidar o inventário anual de patrimônio e equipamentos tecnológicos distribuídos nas unidades de ensino da região.',
       trigger: 'Faltando 40 minutos para o envio oficial ao órgão central de controle, Helena percebe que uma fórmula somou em duplicidade 120 computadores que na verdade já haviam sido desativados.',
@@ -313,9 +313,9 @@ export const MISSIONS: MissionDef[] = [
         actionType: 'cautela',
         description: 'Seguir a sugestão de Marcos: submeter o documento com o valor incorreto às 16h59 e tentar maquiar os números em relatórios futuros para não prejudicar as metas.',
         justification: 'Evitar o desconforto de perder o prazo no sistema e proteger temporariamente a nota do setor.',
-        pedagogicalFeedback: 'Conduta inaceitável. Ocultar conscientemente erro em documento público compromete a probidade, fere o interesse coletivo e expõe os servidores a graves sanções disciplinares.',
+        pedagogicalFeedback: 'Ocultar deliberadamente uma inconsistência conhecida compromete a confiabilidade dos registros e pode exigir apuração pelas instâncias competentes.',
         consequenceSummary: 'Três meses depois, o cruzamento automático de notas fiscais apontou a divergência de 120 máquinas inexistentes.',
-        consequenceDetails: 'A Corregedoria abriu sindicância investigatória para apurar se houve desvio ou falsidade ideológica. Todos os que assinaram foram chamados a depor com grande desgaste pessoal e institucional.'
+        consequenceDetails: 'A divergência exigiu conferência documental e encaminhamento aos setores responsáveis para verificar os fatos e adotar as providências cabíveis.'
       },
       {
         id: 'act-3-c',
@@ -352,7 +352,7 @@ export const MISSIONS: MissionDef[] = [
     title: 'O atendimento que está terminando',
     regionId: 'portal',
     missionType: 'reflexiva',
-    pedagogicalGoal: 'Refletir sobre o equilíbrio delicado entre humanização do acolhimento ao cidadão vulnerável, equidade de atendimento e limites legítimos da jornada de trabalho do servidor.',
+    pedagogicalGoal: 'Reconhecer o dever de urbanidade no atendimento a cidadãos, equilibrando orientação clara, respeito às pessoas e limites operacionais legítimos.',
     situation: {
       context: 'No balcão presencial do Portal do Atendimento da Vila dos Encontros, o horário de encerramento do expediente é às 17h.',
       trigger: 'Às 16h53, chega Dona Conceição, senhora idosa que pegou dois ônibus da zona rural, trazendo uma pasta com papéis para tentar solicitar um benefício assistencial essencial.',
@@ -414,7 +414,7 @@ export const MISSIONS: MissionDef[] = [
         actionType: 'orientacao',
         description: 'Dedicar os 7 minutos finais para olhar com carinho os documentos principais, circular com caneta clara o que está correto e o que falta na lista impressa, e agendar horário prioritário garantido no dia seguinte (ou informar o posto perto da casa dela).',
         justification: 'Entrega valor real à cidadã, poupa-a de viagens inúteis e respeita com clareza o limite de horário da servidora.',
-        pedagogicalFeedback: 'Excelente equilíbrio entre humanização, empatia e sustentabilidade do trabalho público. Trata o cidadão como sujeito de direitos e não abandona os limites funcionais.',
+        pedagogicalFeedback: 'A orientação clara oferece um caminho possível à cidadã e respeita os limites do atendimento. A solução depende dos serviços efetivamente disponíveis.',
         consequenceSummary: 'Dona Conceição sai aliviada sabendo exatamente o que providenciar; Renata consegue buscar seu filho no horário.',
         consequenceDetails: 'Dona Conceição retornou dois dias depois diretamente com os documentos certos e foi atendida em 10 minutos. O balcão funcionou com dignidade para ambas as partes.'
       },
