@@ -89,7 +89,7 @@ export const MissionConsequence: React.FC<MissionConsequenceProps> = ({
             <div key={i} className={`h-3 rounded-full flex-1 ${i < completedCount ? 'bg-amber-400' : 'bg-slate-700'}`} />
           ))}
         </div>
-        {isLastMission && <p className="mt-4 text-teal-200 font-semibold">Você percorreu as quatro missões! A avaliação final permitirá revisitar o que aprendeu.</p>}
+        {isLastMission && <p className="mt-4 text-teal-200 font-semibold">Você percorreu as quatro missões! Suas descobertas estarão reunidas no resumo da jornada.</p>}
       </section>
 
       <NarrationControl key={`${mission.id}-outcome`} text={[chosenAction.title, chosenAction.consequenceDetails, chosenAction.pedagogicalFeedback].join(" ")} />
@@ -161,7 +161,7 @@ export const MissionConsequence: React.FC<MissionConsequenceProps> = ({
         <div className="text-xs sm:text-sm text-slate-300">
           {isLastMission ? (
             <span className="text-amber-300 font-semibold">
-              Parabéns! As 4 missões foram concluídas. A equipe avançará para a avaliação de encerramento.
+              Parabéns! As 4 missões foram concluídas. A equipe avançará para o resumo da jornada.
             </span>
           ) : (
             <span className="text-slate-300">
@@ -174,7 +174,7 @@ export const MissionConsequence: React.FC<MissionConsequenceProps> = ({
           onClick={handleProceed}
           className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 text-slate-950 font-black text-sm shadow-xl flex items-center justify-center gap-2 transition-all active:scale-98"
         >
-          <span>{isLastMission ? 'Ir para Avaliação Final' : 'Voltar ao Mapa Territorial'}</span>
+          <span>{isLastMission ? 'Ver resumo da jornada' : 'Voltar ao Mapa Territorial'}</span>
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
