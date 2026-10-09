@@ -42,3 +42,9 @@ Status: decisões de projeto decorrentes de teste manual da jornada Vila dos Enc
 - A sondagem pré/pós existente não demonstra aprendizagem ou mudança comportamental imediata e atualmente carece de devolutiva individual coerente com a jornada. **Reavaliar sua obrigatoriedade antes do piloto**, sem apresentar resultados como mensuração de ética individual.
 - O **Espelho dos Guardiões**, experiência futura de identificação lúdica com arquétipos de decisão, deve ser tratado como roteiro separado, não como teste psicológico nem hierarquia moral. Nenhum arquétipo autoriza descumprimento de deveres.
 - Prioridade atual: estabilizar e validar a jornada com um participante humano e três companheiros virtuais. Multiplayer, login gov.br e outras jornadas permanecem desdobramentos futuros.
+
+## 8. Decisão de produto: sondagens retiradas da Vila dos Encontros (08/10/2026)
+- A Vila dos Encontros inicia diretamente pelo mapa das quatro missões, após a apresentação da equipe; não exige pré-teste.
+- Após a quarta missão, o participante acessa diretamente o resumo da jornada e suas descobertas; não exige pós-teste.
+- A avaliação de experiência/usabilidade do piloto, se oferecida, é distinta de prova de aprendizagem e não deve classificar moralidade individual.
+- Duas possíveis jornadas futuras, sujeitas a desenho e validação próprios: **O Espelho dos Guardiões** (afinidade lúdica com estilos de decisão) e **Entre Deveres e Escolhas** (reconhecimento contextual de deveres, padrões de conduta e consequências). Não declarar essas jornadas como implementadas.
