@@ -121,20 +121,20 @@ export const MISSIONS: MissionDef[] = [
     title: 'Discordar sem diminuir',
     regionId: 'sala',
     missionType: 'fundamentada',
-    pedagogicalGoal: 'Compreender que divergências técnicas e erros operacionais não justificam ataques à honra ou desqualificação pessoal no ambiente institucional.',
+    pedagogicalGoal: 'Reconhecer o dever de urbanidade nas relações com servidores e colaboradores, distinguindo a correção técnica legítima de ironias e desqualificações pessoais.',
     situation: {
       context: 'No grupo de mensagens de trabalho da equipe de análise de processos, o prazo para envio de um levantamento de impacto orçamentário se esgotava.',
       trigger: 'Um colega (Tiago) cometeu um equívoco na planilha de cálculo de prazos. Em vez de apontar a divergência numérica, Roberto enviou no grupo: “Impressionante como tem gente aqui que parece não saber nem fazer conta de padaria. Falta total de competência”.',
       knownFacts: [
         'A planilha de Tiago continha de fato uma fórmula desatualizada que alterava uma coluna.',
-        'A mensagem com adjetivos desqualificantes foi enviada no grupo oficial de 14 servidores.',
+        'A mensagem com ironias e adjetivos depreciativos foi enviada ao grupo de trabalho, que reúne servidores e colaboradores.',
         'Tiago visualizou a mensagem e saiu do grupo sem responder.'
       ],
       uncertainties: [
         'A equipe deve ignorar o tom agressivo sob pretexto da urgência da entrega?',
         'Como separar a correção técnica inadiável do repúdio inequívoco à ofensa pessoal?'
       ],
-      institutionalNote: 'O respeito à dignidade é dever irrevogável no serviço público. O estresse ou o erro alheio jamais legitimam condutas humilhantes.'
+      institutionalNote: 'O dever de urbanidade orienta o tratamento de todas as pessoas no ambiente institucional, independentemente do vínculo. A urgência não justifica ironias ou desqualificações pessoais.'
     },
     perspectives: [
       {
@@ -156,9 +156,9 @@ export const MISSIONS: MissionDef[] = [
       {
         id: 'persp-2-3',
         actorName: 'Camila',
-        actorRole: 'Colega de Equipe que testemunhou a cena',
+        actorRole: 'Colaboradora terceirizada que testemunhou a conversa',
         actorAvatar: '👩‍🏫',
-        summary: 'Preocupa-se com o clima tóxico, mas teme que intervir piore o conflito ou atrase a planilha.',
+        summary: 'Preocupa-se com o respeito na equipe, mas receia que intervir piore o conflito ou afete sua relação de trabalho.',
         details: '“Todo mundo viu o absurdo do comentário, mas ninguém escreveu nada no grupo. O silêncio pareceu concordância com a agressão, o que me deixou muito mal.”'
       }
     ],
@@ -184,7 +184,7 @@ export const MISSIONS: MissionDef[] = [
         isPreferableInContext: true,
         description: 'No próprio grupo: corrigir prontamente o erro na planilha para salvar a entrega, e posicionar com firmeza que divergências devem ser tratadas tecnicamente, sem ataques pessoais. Em seguida, acolher Tiago no privado.',
         justification: 'Protege a entrega pública sem validar a humilhação coletiva, restabelecendo os limites de convivência diante de todas as testemunhas.',
-        pedagogicalFeedback: 'Resposta modelar. Mostra que a integridade do trabalho público não requer crueldade, e que a ofensa testemunhada em público requer demarcação de limites no mesmo espaço.',
+        pedagogicalFeedback: 'A correção técnica pode ser firme e respeitosa. Reconhecer o limite da urbanidade também ajuda a proteger as relações com servidores e colaboradores.',
         consequenceSummary: 'A planilha é consertada em minutos; o clima é estabilizado com limites éticos claros e Tiago retorna ao projeto amparado.',
         consequenceDetails: 'A postura serena e firme impede a naturalização da grosseria. Roberto é chamado pela chefia para alinhamento de conduta, e Tiago recupera a confiança no suporte da equipe.'
       },
@@ -206,7 +206,7 @@ export const MISSIONS: MissionDef[] = [
         justification: 'Sentimento de indignação imediata para defender o colega ofendido com veemência.',
         pedagogicalFeedback: 'A indignação contra a ofensa é legítima, mas responder com nova desqualificação pessoal amplifica a escalada do conflito e desvirtua o canal institucional.',
         consequenceSummary: 'O grupo se converte em um bate-boca acalorado; o foco na entrega pública se perde e o relatório atrasa.',
-        consequenceDetails: 'Ambos os servidores são chamados para apuração, e a situação desgasta a unidade inteira sem resolver a fórmula nem educar para a convivência.'
+        consequenceDetails: 'A discussão se prolonga, prejudica a entrega e exige intervenção da chefia para restabelecer o diálogo e organizar a correção técnica.'
       }
     ],
     tfChallenge: {
@@ -303,7 +303,7 @@ export const MISSIONS: MissionDef[] = [
         isPreferableInContext: true,
         description: 'Informar imediatamente a chefia e a área técnica sobre a inconsistência identificada, suspender o envio dos dados errados, aplicar o protocolo de retificação justificada e apoiar Helena na conferência dos números.',
         justification: 'Prioriza a veracidade da informação pública, evita que servidores assinem relatórios com dados falsificados e demonstra responsabilidade institucional.',
-        pedagogicalFeedback: 'Decisão ética e juridicamente irretocável. A transparência tempestiva transforma uma falha técnica em demonstração de responsabilidade e integridade coletiva.',
+        pedagogicalFeedback: 'Comunicar o erro e buscar sua correção favorece a confiabilidade dos registros e a responsabilidade compartilhada. O procedimento concreto deve observar as regras do órgão.',
         consequenceSummary: 'O envio é corrigido com duas horas de atraso mediante nota técnica justificativa, preservando a fidelidade patrimonial e a segurança da equipe.',
         consequenceDetails: 'A auditoria externa elogiou a prontidão na retificação. Helena sentiu-se amparada pelo grupo e uma nova rotina de conferência em pares foi implementada na Oficina.'
       },
