@@ -23,9 +23,9 @@ export const CHARACTERS: Record<CharacterId, CharacterDef> = {
     quote: '“Toda história tem várias formas de ser contada. Vamos ouvir o que cada lugar tem a revelar?”',
     powerName: 'Olhar Adiante',
     powerDescription: 'Antecipa duas consequências plausíveis para escolhas em debate, sem impor a resposta.',
-    color: '#8b5cf6', // violet-500
-    accentBg: 'bg-violet-900/30 text-violet-300 border-violet-500/40',
-    borderColor: 'border-violet-500',
+    color: '#f59e0b', // amber-500
+    accentBg: 'bg-amber-900/30 text-amber-300 border-amber-500/40',
+    borderColor: 'border-amber-500',
   },
   ravi: {
     id: 'ravi',
