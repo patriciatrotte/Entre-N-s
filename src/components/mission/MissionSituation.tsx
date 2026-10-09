@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NarrationControl } from './NarrationControl';
 import { MissionDef, RoomState } from '../../types/game';
-import { PerspectiveCard } from '../cards/CardView';
 import { REGIONS } from '../../data/regions';
 import { socketService } from '../../services/socket';
 import { HelpCircle, ArrowRight, ArrowLeft, ShieldCheck, BookOpen, Info } from 'lucide-react';
@@ -20,7 +19,9 @@ export const MissionSituation: React.FC<MissionSituationProps> = ({
   const [step, setStep] = useState(0);
   const [showHelp, setShowHelp] = useState(false);
   const [showFullText, setShowFullText] = useState(false);
-  useEffect(() => { setStep(0); setShowHelp(false); setShowFullText(false); }, [mission.id]);
+  const [thoughtIndex, setThoughtIndex] = useState(0);
+  const [expandedThought, setExpandedThought] = useState<string | null>(null);
+  useEffect(() => { setStep(0); setShowHelp(false); setShowFullText(false); setThoughtIndex(0); setExpandedThought(null); }, [mission.id]);
   const isSolo = Object.values(state.players).filter(p => !p.isBot).length === 1;
   const region = REGIONS[mission.regionId];
 
@@ -30,17 +31,6 @@ export const MissionSituation: React.FC<MissionSituationProps> = ({
     (p) => state.perspectiveAssignments?.[p.id] === myPlayerId
   );
 
-  const sharedPerspectives = mission.perspectives.filter((p) =>
-    state.sharedPerspectiveIds.includes(p.id)
-  );
-
-  const handleShare = (perspId: string) => {
-    socketService.send({
-      type: 'SHARE_PERSPECTIVE',
-      perspectiveId: perspId,
-    });
-  };
-
   const handleProceedToExplore = () => {
     // In server, can jump to explore or directly individual choice
     socketService.send({
@@ -48,7 +38,10 @@ export const MissionSituation: React.FC<MissionSituationProps> = ({
     });
   };
 
-  const steps = ['A história', 'O que sabemos', 'Outras perspectivas', 'Hora de decidir'];
+  const steps = ['A história', 'O que sabemos', 'O que pensam', 'Hora de decidir'];
+  const availablePerspectives = mission.perspectives.filter(p => isSolo || state.sharedPerspectiveIds.includes(p.id) || state.perspectiveAssignments?.[p.id] === myPlayerId);
+  const activeThought = availablePerspectives[thoughtIndex];
+  const thoughtText = (text: string) => text.replace(/^[“\"]|[”\"]$/g, '').trim();
   const next = () => { setShowHelp(false); setShowFullText(false); setStep(n => Math.min(n + 1, 3)); };
   return (
     <div className="flex flex-col gap-5 w-full max-w-3xl mx-auto text-slate-100">
@@ -62,9 +55,9 @@ export const MissionSituation: React.FC<MissionSituationProps> = ({
           <span className="text-sm font-semibold text-teal-200">{steps[step]} · {step + 1}/4</span>
           <button type="button" onClick={() => setShowHelp(v => !v)} aria-expanded={showHelp} aria-label="Explicar os símbolos" className="rounded-full border border-slate-600 p-2 hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-300"><Info className="w-5 h-5" /></button>
         </div>
-        {showHelp && <div className="mt-3 p-3 bg-slate-950 rounded-xl text-sm text-slate-200" role="note">📖 História: conheça a situação. ◈ Fatos: observe o que sabemos e o que ainda é incerto. 👥 Perspectivas: escute os envolvidos. 💡 Reflexão: pense antes de decidir. Toque no símbolo de informação sempre que quiser rever este guia.</div>}
+        {showHelp && <div className="mt-3 p-3 bg-slate-950 rounded-xl text-sm text-slate-200" role="note">📖 História: conheça a situação. ◈ Fatos: observe o que sabemos e o que ainda é incerto. 👥 Pensamentos: conheça um ponto de vista por vez. 💡 Reflexão: pense antes de decidir. Toque no símbolo de informação sempre que quiser rever este guia.</div>}
       </header>
-      <NarrationControl key={`${mission.id}-${step}`} text={step === 0 ? [mission.situation.context, mission.situation.trigger].join(" ") : step === 1 ? [...mission.situation.knownFacts, ...mission.situation.uncertainties].join(" ") : step === 2 ? mission.perspectives.filter(p => state.sharedPerspectiveIds.includes(p.id) || state.perspectiveAssignments?.[p.id] === myPlayerId).map(p => `${p.actorName}. ${p.summary}. ${p.details}`).join(" ") : `Para refletir. O que você considera importante antes de escolher?`} />
+      <NarrationControl key={`${mission.id}-${step}`} text={step === 0 ? [mission.situation.context, mission.situation.trigger].join(" ") : step === 1 ? [...mission.situation.knownFacts, ...mission.situation.uncertainties].join(" ") : step === 2 ? activeThought ? `${activeThought.actorName} pensa: ${thoughtText(activeThought.details)}` : 'Conheça as perspectivas da situação' : `Para refletir. O que você considera importante antes de escolher?`} />
       <section className="bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-7 space-y-4" aria-live="polite">
         {step === 0 && <>
           <div className="flex items-center gap-3"><BookOpen className="w-7 h-7 text-teal-300" aria-hidden="true"/><span className="text-sm text-teal-300">A história</span></div>
@@ -77,14 +70,19 @@ export const MissionSituation: React.FC<MissionSituationProps> = ({
           <details className="rounded-xl bg-slate-950 p-3"><summary className="cursor-pointer text-amber-300 flex gap-2 items-center"><HelpCircle className="w-4 h-4"/> O que ainda não sabemos?</summary><ul className="list-disc pl-5 mt-3 space-y-2 text-sm">{mission.situation.uncertainties.map((item, i) => <li key={i}>{item}</li>)}</ul></details>
         </>}
         {step === 2 && <>
-          <div className="flex items-center gap-3"><BookOpen className="w-7 h-7 text-teal-300" aria-hidden="true"/><span className="text-sm text-teal-300">Outras perspectivas</span></div>
-          <p className="text-sm text-slate-300">{isSolo ? 'Conheça os diferentes pontos de vista desta situação.' : 'Conheça as perspectivas disponíveis e compartilhe a sua com o grupo.'}</p>
-          <div className="space-y-3">{mission.perspectives.map(p => {
-            const assigned = state.perspectiveAssignments?.[p.id] === myPlayerId;
-            const shared = state.sharedPerspectiveIds.includes(p.id);
-            if (!assigned && !shared) return <div key={p.id} className="rounded-xl border border-dashed border-slate-700 p-4 text-sm text-slate-400">🔒 Perspectiva de {p.actorName} ainda não compartilhada</div>;
-            return <div key={p.id} className="rounded-xl border border-slate-700 p-3"><PerspectiveCard perspective={p} isPrivateToMe={assigned} isSharedWithGroup={shared} onShareWithGroup={() => handleShare(p.id)}/></div>;
-          })}</div>
+          <div className="flex items-center gap-3"><BookOpen className="w-7 h-7 text-teal-300" aria-hidden="true"/><span className="text-sm text-teal-300">O que pensam os envolvidos</span></div>
+          <p className="text-sm text-slate-300">Cada pessoa enxerga a situação de um jeito. Conheça um pensamento por vez.</p>
+          {activeThought ? <article className="rounded-2xl border border-teal-500/30 bg-slate-950 p-5 space-y-3" aria-live="polite">
+            <div className="flex items-center gap-3"><span className="text-3xl" aria-hidden="true">{activeThought.actorAvatar}</span><div><p className="font-bold">{activeThought.actorName}</p><p className="text-xs text-slate-400">{activeThought.actorRole} · Pensamento {thoughtIndex + 1} de {availablePerspectives.length}</p></div></div>
+            <blockquote className="border-l-2 border-teal-400 pl-4 text-base italic leading-relaxed text-slate-100">{thoughtText(activeThought.details)}</blockquote>
+            <button type="button" onClick={() => setExpandedThought(v => v === activeThought.id ? null : activeThought.id)} aria-expanded={expandedThought === activeThought.id} className="text-sm text-teal-300 underline underline-offset-4">{expandedThought === activeThought.id ? 'Ocultar contexto' : 'Entender o ponto de vista'}</button>
+            {expandedThought === activeThought.id && <p className="text-sm text-slate-300">{activeThought.summary}</p>}
+            {!isSolo && <button type="button" onClick={() => socketService.send({type:'SHARE_PERSPECTIVE', perspectiveId:activeThought.id})} className="block text-sm text-teal-300 underline">Compartilhar perspectiva</button>}
+          </article> : <p className="text-sm text-slate-300">Nenhuma perspectiva disponível no momento.</p>}
+          {availablePerspectives.length > 1 && <div className="flex justify-between gap-3">
+            <button type="button" disabled={thoughtIndex === 0} onClick={() => {setThoughtIndex(i=>Math.max(0,i-1));setExpandedThought(null);}} className="rounded-lg bg-slate-800 px-4 py-2 text-sm disabled:opacity-40">Pensamento anterior</button>
+            <button type="button" disabled={thoughtIndex === availablePerspectives.length - 1} onClick={() => {setThoughtIndex(i=>Math.min(availablePerspectives.length-1,i+1));setExpandedThought(null);}} className="rounded-lg bg-slate-800 px-4 py-2 text-sm disabled:opacity-40">Próximo pensamento</button>
+          </div>}
         </>}
         {step === 3 && <>
           <div className="flex items-center gap-3"><HelpCircle className="w-7 h-7 text-violet-300" aria-hidden="true"/><span className="text-sm text-violet-300">Para refletir</span></div>
